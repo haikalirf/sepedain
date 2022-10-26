@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">sepeda.in</string>
+    <string name="pre_login_get_started"><b>GET STARTED</b></string>
+    <string name="pre_login_already_have_an_account">Already have an account?</string>
+    <string name="pre_login_login"><b>Login</b></string>
+    <string name="get_us_to_know_you"><b>GET US TO\nKNOW YOU!</b></string>
+    <string name="sign_me_up"><b>SIGN ME UP!</b></string>
+    <string name="welcome_back"><b>WELCOME\nBACK!</b></string>
+    <string name="login"><b>LOGIN</b></string>
+    <string name="don_t_have_an_account">Don\'t have an account?</string>
+    <string name="sign_up"><b>Sign Up</b></string>
 </resources>
