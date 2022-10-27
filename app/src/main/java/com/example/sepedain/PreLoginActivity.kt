@@ -5,29 +5,26 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
+import com.example.sepedain.databinding.ActivityPreLoginBinding
 
 class PreLoginActivity : AppCompatActivity() {
-    private lateinit var btnGetStarted: Button
-    private lateinit var tvlogin: TextView
+    private lateinit var binding: ActivityPreLoginBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pre_login)
+        binding.apply {
+            btnGetStartedActivityPreLogin.setOnClickListener {
+                val intent = Intent(this@PreLoginActivity, RegisterActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
 
-        btnGetStarted = findViewById(R.id.btnGetStarted_activity_pre_login)
-        tvlogin = findViewById(R.id.tvLogin_activity_pre_login)
-
-        btnGetStarted.setOnClickListener {
-            val intent = Intent(this, RegisterActivity::class.java)
-            startActivity(intent)
-            finish()
+            tvLoginActivityPreLogin.setOnClickListener {
+                val intent = Intent(this@PreLoginActivity, LoginActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
         }
-
-        tvlogin.setOnClickListener {
-            val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent)
-            finish()
-        }
-
     }
 }
