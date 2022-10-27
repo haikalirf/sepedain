@@ -12,7 +12,10 @@ class PreLoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_pre_login)
+        binding = ActivityPreLoginBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        supportActionBar?.hide()
+
         binding.apply {
             btnGetStartedActivityPreLogin.setOnClickListener {
                 val intent = Intent(this@PreLoginActivity, RegisterActivity::class.java)
