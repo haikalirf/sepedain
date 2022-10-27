@@ -3,6 +3,7 @@ package com.example.sepedain
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.blogspot.atifsoftwares.animatoolib.Animatoo
 import com.example.sepedain.databinding.ActivityRegisterBinding
 
 class RegisterActivity : AppCompatActivity() {
@@ -18,6 +19,7 @@ class RegisterActivity : AppCompatActivity() {
             .setOnClickListener {
                 val intent = Intent(this, LoginActivity::class.java)
                 startActivity(intent)
+                Animatoo.animateSlideRight(this)
                 finish()
             }
     }

@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
+import com.blogspot.atifsoftwares.animatoolib.Animatoo
 import com.example.sepedain.databinding.ActivityPreLoginBinding
 
 class PreLoginActivity : AppCompatActivity() {
@@ -20,12 +21,14 @@ class PreLoginActivity : AppCompatActivity() {
             btnGetStartedActivityPreLogin.setOnClickListener {
                 val intent = Intent(this@PreLoginActivity, RegisterActivity::class.java)
                 startActivity(intent)
+                Animatoo.animateSlideRight(this@PreLoginActivity)
                 finish()
             }
 
             tvLoginActivityPreLogin.setOnClickListener {
                 val intent = Intent(this@PreLoginActivity, LoginActivity::class.java)
                 startActivity(intent)
+                Animatoo.animateSlideRight(this@PreLoginActivity)
                 finish()
             }
         }
