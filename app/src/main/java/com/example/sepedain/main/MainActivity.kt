@@ -14,7 +14,6 @@ import com.example.sepedain.network.PlaceResponse
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import retrofit2.Call
 import retrofit2.Response
-import javax.security.auth.callback.Callback
 
 class MainActivity : AppCompatActivity() {
 
@@ -57,9 +56,6 @@ class MainActivity : AppCompatActivity() {
             override fun onFailure(call: Call<PlaceResponse>, t: Throwable) {
                 Log.e("failed", ""+t.message)
             }
-
-
         })
-
     }
 }
