@@ -4,8 +4,8 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="?attr/actionBarSize"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:paddingTop="?attr/actionBarSize">
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/nav_view"
@@ -14,7 +14,8 @@
         android:layout_marginStart="0dp"
         android:layout_marginEnd="0dp"
         android:background="@drawable/bot_nav_box"
-        app:itemRippleColor="@color/orange"
+        app:itemIconTint="@color/orange"
+        app:itemRippleColor="@color/dark_blue"
         app:itemTextColor="@color/orange"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
