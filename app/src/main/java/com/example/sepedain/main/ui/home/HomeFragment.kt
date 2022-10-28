@@ -1,13 +1,22 @@
 package com.example.sepedain.main.ui.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.sepedain.R
 import com.example.sepedain.databinding.FragmentHomeBinding
+import com.example.sepedain.network.ApiClient
+import com.example.sepedain.network.PlaceResponse
+import retrofit2.Call
+import retrofit2.Response
+
 //import com.example.sepedain.home.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {
@@ -31,8 +40,6 @@ class HomeFragment : Fragment() {
         return root
     }
 
-<<<<<<< Updated upstream
-=======
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val client = ApiClient.apiService.fetchPlace(
@@ -55,7 +62,6 @@ class HomeFragment : Fragment() {
                         recyclerView.layoutManager = LinearLayoutManager(HomeFragment().context, LinearLayoutManager.HORIZONTAL, false)
                         recyclerView.adapter = adapter
                         recyclerView.setHasFixedSize(true)
-//                        binding.tvHellouserHomefragment.text = result[0].name
                     }
                 }
             }
@@ -66,7 +72,6 @@ class HomeFragment : Fragment() {
         })
     }
 
->>>>>>> Stashed changes
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
