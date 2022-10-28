@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.sepedain.R
 import com.example.sepedain.databinding.FragmentMapBinding
+import com.example.sepedain.dataclasses.PlaceMap
 import com.example.sepedain.main.ui.home.HomeViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices

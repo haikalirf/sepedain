@@ -1,6 +1,5 @@
 package com.example.sepedain.dataclasses
 
-import com.example.sepedain.main.ui.map.PlaceMap
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize

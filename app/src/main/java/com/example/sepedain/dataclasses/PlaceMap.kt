@@ -1,4 +1,4 @@
-package com.example.sepedain.main.ui.map
+package com.example.sepedain.dataclasses
 
 import java.util.Date
 import java.util.Timer
