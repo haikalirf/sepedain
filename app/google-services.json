@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "264486524871",
+    "project_id": "sepedain",
+    "storage_bucket": "sepedain.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:264486524871:android:73df0df1da6b7ab90cabe2",
+        "android_client_info": {
+          "package_name": "com.example.sepedain"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "264486524871-p0m6gtfnreupi65auq44qnscj88908bj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPTaajP_Yv6u9MQTZc5H4QKl0Yq8ikj0c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "264486524871-p0m6gtfnreupi65auq44qnscj88908bj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
