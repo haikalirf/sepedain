@@ -19,7 +19,7 @@ class RegisterActivity : AppCompatActivity() {
             .setOnClickListener {
                 val intent = Intent(this, LoginActivity::class.java)
                 startActivity(intent)
-                Animatoo.animateSlideRight(this)
+                Animatoo.animateSlideLeft(this)
                 finish()
             }
     }

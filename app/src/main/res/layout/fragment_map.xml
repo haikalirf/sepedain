@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".home.ui.map.MapFragment">
+    android:background="@color/white"
+    tools:context=".main.ui.map.MapFragment">
 
     <TextView
         android:id="@+id/text_dashboard"

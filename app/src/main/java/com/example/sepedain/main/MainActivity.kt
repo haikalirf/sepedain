@@ -1,4 +1,4 @@
-package com.example.sepedain.home
+package com.example.sepedain.main
 
 import android.os.Bundle
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
         // menu should be considered as top level destinations.
         val appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.navigation_home, R.id.navigation_map, R.id.navigation_history
+                R.id.navigation_home, R.id.navigation_map, R.id.navigation_history, R.id.navigation_profile
             )
         )
         setupActionBarWithNavController(navController, appBarConfiguration)

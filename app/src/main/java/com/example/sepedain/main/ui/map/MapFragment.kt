@@ -1,4 +1,4 @@
-package com.example.sepedain.home.ui.map
+package com.example.sepedain.main.ui.map
 
 import android.os.Bundle
 import android.view.LayoutInflater

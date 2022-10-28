@@ -16,4 +16,15 @@
     <string name="map">Map</string>
     <string name="history">History</string>
     <string name="profile">Profile</string>
+    <string name="hello_user">Hello, User!</string>
+    <string name="user">User!</string>
+    <string name="hello">Hello,</string>
+    <string name="profile_picture">Profile Picture</string>
+    <string name="what_would_you_ride_today">What would you ride today?</string>
+    <string name="bikes_near_you">Bikes near you</string>
+    <string name="see_more">See More</string>
+    <string name="recently_visited">Recently visited</string>
+    <string name="what_s_your_first_name">What\'s your first name?</string>
+    <string name="what_s_your_last_name">What\'s your last name?</string>
+    <string name="phone_number">Phone Number</string>
 </resources>

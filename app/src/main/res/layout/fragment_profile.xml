@@ -4,19 +4,67 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".home.ui.map.MapFragment">
+    android:background="@color/white"
+    tools:context=".main.ui.map.MapFragment"
+    android:paddingHorizontal="24dp">
 
-    <TextView
-        android:id="@+id/text_dashboard"
+    <com.mikhaellopez.circularimageview.CircularImageView
+        android:id="@+id/iv_profilepicture_profilefragment"
+        android:layout_width="175dp"
+        android:layout_height="175dp"
+        android:layout_marginTop="64dp"
+        android:contentDescription="@string/profile_picture"
+        android:scaleType="centerCrop"
+        android:src="@drawable/default_profile"
+        app:civ_border="false"
+        app:civ_shadow="true"
+        app:civ_shadow_color="@color/black"
+        app:civ_shadow_gravity="bottom"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/et_firstname_profilefragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        style="@style/DefaultText"
+        android:textSize="16sp"
+        android:inputType="text"
+        android:autofillHints="name"
+        android:hint="@string/what_s_your_first_name"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_profilepicture_profilefragment" />
+
+    <EditText
+        android:id="@+id/et_lastname_profilefragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/DefaultText"
+        android:textSize="16sp"
+        android:inputType="text"
+        android:autofillHints="name"
+        android:layout_marginTop="16dp"
+        android:hint="@string/what_s_your_last_name"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_firstname_profilefragment" />
+
+    <EditText
+        android:id="@+id/et_phonenumber_profilefragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/DefaultText"
+        android:textSize="16sp"
+        android:inputType="phone"
+        android:autofillHints="name"
+        android:layout_marginTop="16dp"
+        android:hint="@string/phone_number"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_lastname_profilefragment" />
+
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

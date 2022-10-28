@@ -7,25 +7,25 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.example.sepedain.home.ui.home.HomeFragment"
+        android:name="com.example.sepedain.main.ui.home.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/navigation_map"
-        android:name="com.example.sepedain.home.ui.map.MapFragment"
+        android:name="com.example.sepedain.main.ui.map.MapFragment"
         android:label="@string/title_dashboard"
         tools:layout="@layout/fragment_map" />
 
     <fragment
         android:id="@+id/navigation_history"
-        android:name="com.example.sepedain.home.ui.history.HistoryFragment"
+        android:name="com.example.sepedain.main.ui.history.HistoryFragment"
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_history" />
 
     <fragment
         android:id="@+id/navigation_profile"
-        android:name="com.example.sepedain.home.ui.profile.ProfileFragment"
+        android:name="com.example.sepedain.main.ui.profile.ProfileFragment"
         android:label="@string/profile"
         tools:layout="@layout/fragment_profile" />
 </navigation>
