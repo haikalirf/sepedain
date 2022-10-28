@@ -1,5 +1,6 @@
 package com.example.sepedain.network
 
+import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 import com.squareup.moshi.Json
 
@@ -18,7 +19,7 @@ data class Place(
 //    val country : String = ""
     @Json(name="formatted")
     val formatted : String = ""
-)
+): Parcelable
 
 data class PlaceResponse(@Json(name = "features")
 val result: List<Place>)
