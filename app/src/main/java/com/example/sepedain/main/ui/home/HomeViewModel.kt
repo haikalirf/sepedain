@@ -3,11 +3,18 @@ package com.example.sepedain.main.ui.home
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.sepedain.dataclasses.PlaceMap
 
 class HomeViewModel : ViewModel() {
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is home Fragment"
+    lateinit var recyclerListData: MutableLiveData<PlaceMap>
+
+    init {
+        recyclerListData = MutableLiveData()
     }
-    val text: LiveData<String> = _text
+
+    fun getRecyclerListDataObserver(): MutableLiveData<PlaceMap> {
+        return recyclerListData
+    }
+
 }
