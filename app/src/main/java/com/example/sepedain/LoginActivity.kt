@@ -22,8 +22,8 @@ class LoginActivity : AppCompatActivity() {
 
         binding.apply {
             btnLoginActivityLogin.setOnClickListener {
-                val email = binding.etEmailActivityLogin.text.toString()
-                val pass = binding.etPasswordActivityLogin.text.toString()
+                val email = binding.etEmailActivityLogin.text.toString().trim()
+                val pass = binding.etPasswordActivityLogin.text.toString().trim()
 
                 if (email.isNotEmpty() && pass.isNotEmpty()) {
                     auth.signInWithEmailAndPassword(email, pass).addOnCompleteListener {
@@ -36,6 +36,8 @@ class LoginActivity : AppCompatActivity() {
                             Toast.makeText(this@LoginActivity, "User does not exist", Toast.LENGTH_SHORT).show()
                         }
                     }
+                } else {
+                    Toast.makeText(this@LoginActivity, "Every field must be filled", Toast.LENGTH_SHORT).show()
                 }
             }
 

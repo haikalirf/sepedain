@@ -1,5 +1,9 @@
 package com.example.sepedain.dataclasses
 
+import com.example.sepedain.main.ui.map.PlaceMap
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
 class User {
     var username: String? = null
     var email: String? = null
@@ -8,6 +12,7 @@ class User {
     var lastName: String? = null
     var phoneNumber: String? = null
     var gender: String? = null
+    lateinit var recentlyVisited: Array<PlaceMap>
 
     constructor()
     constructor(username: String?, email: String?, uid: String?, ) {

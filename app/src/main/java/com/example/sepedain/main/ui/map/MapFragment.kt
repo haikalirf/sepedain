@@ -89,9 +89,9 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         }
     }
 
-    private fun generateLocations(): List<Place> {
+    private fun generateLocations(): List<PlaceMap> {
         return listOf(
-            Place("Fakultas Ilmu Komputer", -7.953983029270556, 112.61428770395894)
+            PlaceMap("Fakultas Ilmu Komputer", -7.953983029270556, 112.61428770395894)
         )
     }
 
@@ -123,9 +123,12 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         locationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
         mMap = googleMap
         mMap.setInfoWindowAdapter(CustomInfoWindowAdapter(requireActivity()))
-        val places: List<Place> = generateLocations()
+        mMap.setOnMarkerClickListener {
 
-        for (place in places) {
+        }
+        val placeMaps: List<PlaceMap> = generateLocations()
+
+        for (place in placeMaps) {
             mMap.addMarker(
                 MarkerOptions()
                     .position(LatLng(place.latitude, place.longitude))
