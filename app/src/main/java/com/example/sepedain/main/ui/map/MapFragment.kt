@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -92,7 +93,7 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
     private fun generateLocations(): List<PlaceMap> {
         return listOf(
-            PlaceMap("Fakultas Ilmu Komputer", -7.953983029270556, 112.61428770395894)
+            PlaceMap("Fakultas Ilmu Komputer", -7.953983029270556, 112.61428770395894, date = null, duration = null)
         )
     }
 
@@ -115,35 +116,33 @@ class MapFragment : Fragment(), OnMapReadyCallback{
         var loc: Location? = null
         locationClient.lastLocation.addOnSuccessListener {
             loc = it
-//            Toast.makeText(this, (loc?.latitude?.toBigDecimal()?.toPlainString()) + " " + (loc?.longitude?.toBigDecimal()?.toPlainString()), Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireActivity(), (loc?.latitude?.toBigDecimal()?.toPlainString()) + " " + (loc?.longitude?.toBigDecimal()?.toPlainString()), Toast.LENGTH_SHORT).show()
         }
         return loc
     }
 
-    override fun onMapReady(googleMap: GoogleMap) {
+    override fun onMapReady(mMap: GoogleMap) {
         locationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
-        mMap = googleMap
         mMap.setInfoWindowAdapter(CustomInfoWindowAdapter(requireActivity()))
-        mMap.setOnMarkerClickListener {
-
-        }
         val placeMaps: List<PlaceMap> = generateLocations()
 
         for (place in placeMaps) {
-            mMap.addMarker(
+            val marker = mMap.addMarker(
                 MarkerOptions()
                     .position(LatLng(place.latitude, place.longitude))
                     .title(place.location)
-                    .snippet("150m away")
-                    .icon(bitmapDescriptorFromVector(requireActivity(), R.drawable.marker_sepeda)))
+                    .snippet("https://firebasestorage.googleapis.com/v0/b/sepedain.appspot.com/o/download.jpg?alt=media&token=e4809993-912e-473c-b555-7073ed428b2c")
+                    .icon(bitmapDescriptorFromVector(requireActivity(), R.drawable.marker_sepeda))
+            )
         }
+
         val startLocation: Location? = lastLocation()
         if (startLocation != null) {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(startLocation.latitude, startLocation.longitude), 16f))
-//            Toast.makeText(this, (startLocation.latitude.toBigDecimal().toPlainString()) + (startLocation.longitude.toBigDecimal().toPlainString()), Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireActivity(), (startLocation.latitude.toBigDecimal().toPlainString()) + (startLocation.longitude.toBigDecimal().toPlainString()), Toast.LENGTH_SHORT).show()
         }
         else {
-//            Toast.makeText(this, "Couldn't find location", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireActivity(), "Couldn't find location", Toast.LENGTH_SHORT).show()
         }
     }
 }

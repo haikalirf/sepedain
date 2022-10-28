@@ -34,7 +34,7 @@ class RegisterActivity : AppCompatActivity() {
                     if (it.isSuccessful) {
                         dbRef = FirebaseDatabase.getInstance().reference
                         val currUid = auth.currentUser?.uid!!
-                        dbRef.child("user").child(currUid).setValue(User(uname, email, currUid))
+                        dbRef.child("user").child(currUid).setValue(User(uname, email, currUid, "User", null, null, null, null))
                         Toast.makeText(this, "Successfully created an account", Toast.LENGTH_SHORT).show()
                         val intent = Intent(this, LoginActivity::class.java)
                         startActivity(intent)

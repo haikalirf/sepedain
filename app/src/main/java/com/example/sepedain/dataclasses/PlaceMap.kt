@@ -1,14 +1,17 @@
 package com.example.sepedain.dataclasses
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+import java.sql.Time
 import java.util.Date
-import java.util.Timer
 
+@Parcelize
 data class PlaceMap(
     val location: String,
     val latitude: Double,
     val longitude: Double,
-    val price: Int,
-    val imageId: Int,
-    val duration: Timer,
-    val date: Date
-)
+    val price: Int = 0,
+    val imageId: Int = -1,
+    val duration: Time?,
+    val date: Date?
+) : Parcelable
