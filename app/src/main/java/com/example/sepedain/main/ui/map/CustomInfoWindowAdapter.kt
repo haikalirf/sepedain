@@ -22,7 +22,7 @@ class CustomInfoWindowAdapter (context: Context) : GoogleMap.InfoWindowAdapter {
 //        tvDistance = mWindow.findViewById(R.id.tvDistance)
         ivImage = mWindow.findViewById(R.id.ivLocationImage_info_window_layout)
         tvLocation.text = marker.title
-        Glide.with(mWindow).load(marker.snippet).into(ivImage)
+        Glide.with(mWindow).load(marker.snippet).centerCrop().placeholder(R.drawable.placeholder).into(ivImage)
 //        tvDistance.text = marker.snippet
         return mWindow
     }

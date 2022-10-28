@@ -7,6 +7,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.location.Location
 import android.os.Bundle
+import android.provider.ContactsContract.Data
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +19,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.sepedain.R
 import com.example.sepedain.databinding.FragmentMapBinding
 import com.example.sepedain.dataclasses.PlaceMap
+import com.example.sepedain.dataclasses.User
 import com.example.sepedain.main.ui.home.HomeViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -26,6 +28,9 @@ import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 
 
 class MapFragment : Fragment(), OnMapReadyCallback{
@@ -34,6 +39,8 @@ class MapFragment : Fragment(), OnMapReadyCallback{
     private val PERMISSIONS_REQUEST_LOCATION = 1
     private var _binding: FragmentMapBinding? = null
     private val binding get() = _binding!!
+    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+    private lateinit var dbRef: DatabaseReference
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -93,11 +100,12 @@ class MapFragment : Fragment(), OnMapReadyCallback{
 
     private fun generateLocations(): List<PlaceMap> {
         return listOf(
-            PlaceMap("Fakultas Ilmu Komputer", -7.953983029270556, 112.61428770395894, date = null, duration = null)
+            PlaceMap("Fakultas Ilmu Komputer", -7.953983029270556, 112.61428770395894, "https://firebasestorage.googleapis.com/v0/b/sepedain.appspot.com/o/places%2Ffilkom.jpg?alt=media&token=d63f133c-2533-47f1-911f-b7799bceff1d", date = null, duration = null)
+
         )
     }
 
-    private fun lastLocation(): Location? {
+    private fun lastLocation() {
         if (ActivityCompat.checkSelfPermission(
                 requireActivity(),
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -113,12 +121,12 @@ class MapFragment : Fragment(), OnMapReadyCallback{
             )
         }
 
-        var loc: Location? = null
         locationClient.lastLocation.addOnSuccessListener {
-            loc = it
-            Toast.makeText(requireActivity(), (loc?.latitude?.toBigDecimal()?.toPlainString()) + " " + (loc?.longitude?.toBigDecimal()?.toPlainString()), Toast.LENGTH_SHORT).show()
+            val currUid = auth.currentUser?.uid!!
+            dbRef = FirebaseDatabase.getInstance().reference
+            dbRef.child("user").child(currUid).child("lastKnownLocation").setValue("a")
+//            Toast.makeText(requireActivity(), (loc?.latitude?.toBigDecimal()?.toPlainString()) + " " + (loc?.longitude?.toBigDecimal()?.toPlainString()), Toast.LENGTH_SHORT).show()
         }
-        return loc
     }
 
     override fun onMapReady(mMap: GoogleMap) {
@@ -131,18 +139,18 @@ class MapFragment : Fragment(), OnMapReadyCallback{
                 MarkerOptions()
                     .position(LatLng(place.latitude, place.longitude))
                     .title(place.location)
-                    .snippet("https://firebasestorage.googleapis.com/v0/b/sepedain.appspot.com/o/download.jpg?alt=media&token=e4809993-912e-473c-b555-7073ed428b2c")
+                    .snippet(place.imageUrl)
                     .icon(bitmapDescriptorFromVector(requireActivity(), R.drawable.marker_sepeda))
             )
         }
 
-        val startLocation: Location? = lastLocation()
-        if (startLocation != null) {
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(startLocation.latitude, startLocation.longitude), 16f))
-            Toast.makeText(requireActivity(), (startLocation.latitude.toBigDecimal().toPlainString()) + (startLocation.longitude.toBigDecimal().toPlainString()), Toast.LENGTH_SHORT).show()
-        }
-        else {
-            Toast.makeText(requireActivity(), "Couldn't find location", Toast.LENGTH_SHORT).show()
-        }
+        lastLocation()
+//        if (startLocation != null) {
+//            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(startLocation.latitude, startLocation.longitude), 16f))
+//            Toast.makeText(requireActivity(), (startLocation.latitude.toBigDecimal().toPlainString()) + (startLocation.longitude.toBigDecimal().toPlainString()), Toast.LENGTH_SHORT).show()
+//        }
+//        else {
+//            Toast.makeText(requireActivity(), "Couldn't find location", Toast.LENGTH_SHORT).show()
+//        }
     }
 }
