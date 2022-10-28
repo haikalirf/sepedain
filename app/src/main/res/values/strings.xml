@@ -27,4 +27,6 @@
     <string name="what_s_your_first_name">What\'s your first name?</string>
     <string name="what_s_your_last_name">What\'s your last name?</string>
     <string name="phone_number">Phone Number</string>
+    <string name="place_name">Place Name</string>
+    <string name="placeimage">PlaceImage</string>
 </resources>

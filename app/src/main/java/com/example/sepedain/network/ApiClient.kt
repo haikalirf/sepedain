@@ -10,7 +10,8 @@ import retrofit2.http.Query
 
 object ApiClient {
 
-    private val BASE_URL = "https://api.geoapify.com/v2/"
+    private const val BASE_URL =
+        "https://api.geoapify.com/v2/"
 
     private val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
 
@@ -27,6 +28,12 @@ object ApiClient {
 }
 
 interface ApiService {
-    @GET("place")
-    fun fetchPlace(@Query("page") page: String): Call<PlaceResponse>
+    @GET("places")
+    fun fetchPlace(
+        @Query("categories") categories: String,
+        @Query("filter") filter: String,
+        @Query("bias") bias: String,
+        @Query("limit") limit: String,
+        @Query("apiKey") apiKey: String
+    ): Call<PlaceResponse>
 }

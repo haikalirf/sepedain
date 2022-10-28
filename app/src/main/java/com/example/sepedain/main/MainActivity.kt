@@ -7,8 +7,12 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.sepedain.R
 import com.example.sepedain.databinding.ActivityMainBinding
+import com.example.sepedain.main.ui.home.BikesNearYouAdapter
+import com.example.sepedain.main.ui.home.HomeFragment
 import com.example.sepedain.network.ApiClient
 import com.example.sepedain.network.PlaceResponse
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -43,19 +47,5 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
         supportActionBar?.hide()
-
-        val client = ApiClient.apiService.fetchPlace("1")
-
-        client.enqueue(object : retrofit2.Callback<PlaceResponse> {
-            override fun onResponse(call: Call<PlaceResponse>, response: Response<PlaceResponse>) {
-                if (response.isSuccessful) {
-                    Log.d("place", ""+response.body())
-                }
-            }
-
-            override fun onFailure(call: Call<PlaceResponse>, t: Throwable) {
-                Log.e("failed", ""+t.message)
-            }
-        })
     }
 }
