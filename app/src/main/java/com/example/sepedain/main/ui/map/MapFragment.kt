@@ -18,19 +18,12 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.directions.route.*
 import com.example.sepedain.R
 import com.example.sepedain.databinding.FragmentMapBinding
-import com.example.sepedain.dataclasses.PlaceMap
-import com.example.sepedain.main.OrderDetailActivity
 import com.example.sepedain.main.ScreenState
-import com.example.sepedain.main.ui.home.BikesNearYouAdapter
-import com.example.sepedain.main.ui.home.HomeFragment
 import com.example.sepedain.main.ui.home.HomeViewModel
 import com.example.sepedain.network.Place
-import com.example.sepedain.network.locImage
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
@@ -90,13 +83,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, RoutingListener{
             BitmapDescriptorFactory.fromBitmap(bitmap)
         }
     }
-
-//    private fun generateLocations(): List<Place> {
-//        return listOf(
-////            Place("Fakultas Ilmu Komputer", -7.953983029270556, 112.61428770395894, "https://firebasestorage.googleapis.com/v0/b/sepedain.appspot.com/o/places%2Ffilkom.jpg?alt=media&token=d63f133c-2533-47f1-911f-b7799bceff1d", date = null, duration = null)
-//            Place(placeData[0].properties.name.toString(), placeData[0].properties.lat, placeData[0].properties.lon, "https://firebasestorage.googleapis.com/v0/b/sepedain.appspot.com/o/places%2Ffilkom.jpg?alt=media&token=d63f133c-2533-47f1-911f-b7799bceff1d", date = null, duration = null)
-//        )
-//    }
 
     private fun checkPermissions(): Boolean {
         if (ActivityCompat.checkSelfPermission(
@@ -243,7 +229,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, RoutingListener{
                             MarkerOptions()
                                 .position(LatLng(place.properties.lat, place.properties.lon))
                                 .title(place.properties.name)
-                                .snippet(place.properties.distance.toString() + "m away" )
+                                .snippet(place.properties.distance.toString() + "m away")
                                 .icon(bitmapDescriptorFromVector(requireActivity(), R.drawable.marker_sepeda))
                         )
                         marker!!.tag = false
@@ -275,7 +261,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, RoutingListener{
 
     override fun onRoutingFailure(e: RouteException?) {
         Toast.makeText(requireActivity(), e.toString(), Toast.LENGTH_SHORT).show()
-//    Findroutes(start,end);
     }
 
     override fun onRoutingStart() {
@@ -283,8 +268,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, RoutingListener{
     }
 
     override fun onRoutingSuccess(route: ArrayList<Route>?, shortestRouteIndex: Int) {
-//        val center = CameraUpdateFactory.newLatLng(start)
-//        val zoom = CameraUpdateFactory.zoomTo(16f)
         polylines?.clear()
         val polyOptions = PolylineOptions()
 

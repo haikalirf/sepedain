@@ -9,11 +9,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.sepedain.databinding.FragmentProfileBinding
+import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import java.io.File
@@ -24,6 +26,7 @@ class ProfileFragment : Fragment() {
     private var _binding: FragmentProfileBinding? = null
     private lateinit var stref: StorageReference
     private lateinit var auth: FirebaseAuth
+    private lateinit var dbRef: DatabaseReference
     private lateinit var imageUri: Uri
 
     // This property is only valid between onCreateView and
@@ -40,7 +43,6 @@ class ProfileFragment : Fragment() {
 
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         val root: View = binding.root
-
         auth = FirebaseAuth.getInstance()
         val uid = auth.uid
         stref = FirebaseStorage.getInstance().getReference("profile-pictures/$uid")
@@ -59,9 +61,27 @@ class ProfileFragment : Fragment() {
             Toast.makeText(requireActivity(), e.toString(), Toast.LENGTH_SHORT).show()
         }
 
-        binding.ivProfilepictureProfilefragment.setOnClickListener(View.OnClickListener {
+        binding.ivProfilepictureProfilefragment.setOnClickListener {
             selectImage()
-        })
+        }
+
+        binding.btnUpdateprofileProfilefragment.setOnClickListener {
+            dbRef = FirebaseDatabase.getInstance().reference
+            val currUid = auth.currentUser?.uid!!
+            dbRef = FirebaseDatabase.getInstance().reference
+            val update: HashMap<String, Any> = HashMap()
+            update["firstName"] = binding.etFirstnameProfilefragment.text.toString().trim()
+            update["lastName"] = binding.etLastnameProfilefragment.text.toString().trim()
+            update["phoneNumber"] = binding.etPhonenumberProfilefragment.text.toString().trim()
+            dbRef.child("user").child(currUid).updateChildren(update).addOnCompleteListener {
+                if (it.isSuccessful) {
+                    Toast.makeText(requireContext(), "Update successful", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(requireContext(), "Update failed", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+        }
 
         return root
     }

@@ -26,7 +26,7 @@ class BikesNearYouAdapter(private val placeList: List<Place>, private val locIma
             val name = itemView.findViewById<TextView>(R.id.tv_placename)
             name.text = place.properties.name
             val distance = itemView.findViewById<TextView>(R.id.tv_distance)
-            distance.text = StringBuilder(place.properties.distance.toString()).append(" m away")
+            distance.text = StringBuilder(place.properties.distance.toString()).append("m away")
             val image = itemView.findViewById<ImageView>(R.id.iv_placeimage)
             image.setImageResource(locationImage)
         }

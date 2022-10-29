@@ -32,17 +32,18 @@
 
         <EditText
             android:id="@+id/et_firstname_profilefragment"
+            style="@style/DefaultText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/DefaultText"
-            android:textSize="16sp"
-            android:inputType="text"
-            android:autofillHints="name"
             android:layout_marginTop="36dp"
+            android:autofillHints="name"
             android:hint="@string/what_s_your_first_name"
+            android:inputType="text"
             android:textColorHint="@color/black"
-            app:layout_constraintStart_toStartOf="parent"
+            android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/iv_profilepicture_profilefragment" />
 
         <EditText
@@ -74,6 +75,21 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/et_lastname_profilefragment" />
+
+        <Button
+            android:id="@+id/btn_updateprofile_profilefragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="150dp"
+            android:text="UPDATE PROFILE"
+            android:fontFamily="@font/plus_jakarta_sans"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:background="@drawable/box_button"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/et_phonenumber_profilefragment"
+            />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
