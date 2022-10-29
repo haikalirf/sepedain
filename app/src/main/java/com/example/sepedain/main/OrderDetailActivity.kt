@@ -13,6 +13,7 @@ class OrderDetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityOrderDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        supportActionBar?.hide()
 
         val item = intent.getParcelableExtra<Place>("LOCATION")
         val image = intent.getIntExtra("LOCATION_IMAGE", -1)
