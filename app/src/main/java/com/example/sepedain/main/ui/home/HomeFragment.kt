@@ -144,11 +144,6 @@ class HomeFragment : Fragment() {
                         Toast.makeText(requireActivity(), "Null Received", Toast.LENGTH_SHORT)
                             .show()
                     } else {
-                        Toast.makeText(
-                            requireActivity(),
-                            "Get Success $longitude $latitude",
-                            Toast.LENGTH_SHORT
-                        ).show()
                         latitude = location.latitude
                         longitude = location.longitude
                     }
