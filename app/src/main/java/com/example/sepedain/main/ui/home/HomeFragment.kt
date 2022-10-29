@@ -8,7 +8,6 @@ import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,13 +16,11 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.sepedain.R
 import com.example.sepedain.databinding.FragmentHomeBinding
-import com.example.sepedain.network.ApiClient
-import com.example.sepedain.network.PlaceResponse
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import retrofit2.Call
-import retrofit2.Response
 
 
 class HomeFragment : Fragment() {
@@ -33,13 +30,14 @@ class HomeFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
-    private var latitude: Double = 0.0
-    private var longitude: Double = 0.0
+    var latitude: Double = 0.0
+    var longitude: Double = 0.0
+    private lateinit var homeViewModel: HomeViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        val homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+        homeViewModel = ViewModelProvider(this)[HomeViewModel::class.java]
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         fusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(requireActivity())
@@ -53,36 +51,45 @@ class HomeFragment : Fragment() {
             LocationServices.getFusedLocationProviderClient(requireActivity())
         getCurrentLocation()
 
-        val client = ApiClient.apiService.fetchPlaces(
-            "commercial",
-            "geometry:0ad2ca57a82b4a5ab2919dc0a5e93711",
-            "proximity:$longitude,$latitude",
-            "20",
-            "ec51bcde20554127ac97cc4c52eff067"
-        )
+        homeViewModel.placeLiveData.observe(viewLifecycleOwner) { places ->
+            val adapter = BikesNearYouAdapter(places)
+            val recyclerView = view.findViewById<RecyclerView>(R.id.rv_bikesnearyou)
+            recyclerView?.layoutManager =
+                LinearLayoutManager(HomeFragment().context, LinearLayoutManager.HORIZONTAL, false)
+            recyclerView?.adapter = adapter
+            recyclerView?.setHasFixedSize(true)
+        }
 
-        client.enqueue(object : retrofit2.Callback<PlaceResponse> {
-            override fun onResponse(call: Call<PlaceResponse>, response: Response<PlaceResponse>) {
-                if (response.isSuccessful) {
-                    Log.d("place", "" + response.body())
-
-                    val result = response.body()?.result
-                    result?.let {
-                        val adapter = BikesNearYouAdapter(result)
-                        val recyclerView = binding.rvBikesnearyou
-                        recyclerView.layoutManager = LinearLayoutManager(
-                            HomeFragment().context, LinearLayoutManager.HORIZONTAL, false
-                        )
-                        recyclerView.adapter = adapter
-                        recyclerView.setHasFixedSize(true)
-                    }
-                }
-            }
-
-            override fun onFailure(call: Call<PlaceResponse>, t: Throwable) {
-                Log.e("failed", "" + t.message)
-            }
-        })
+//        val client = ApiClient.apiService.fetchPlaces(
+//            "commercial",
+//            "geometry:0ad2ca57a82b4a5ab2919dc0a5e93711",
+//            "proximity:$longitude,$latitude",
+//            "20",
+//            "ec51bcde20554127ac97cc4c52eff067"
+//        )
+//
+//        client.enqueue(object : retrofit2.Callback<PlaceResponse> {
+//            override fun onResponse(call: Call<PlaceResponse>, response: Response<PlaceResponse>) {
+//                if (response.isSuccessful) {
+//                    Log.d("place", "" + response.body())
+//
+//                    val result = response.body()?.result
+//                    result?.let {
+//                        val adapter = BikesNearYouAdapter(result)
+//                        val recyclerView = binding.rvBikesnearyou
+//                        recyclerView.layoutManager = LinearLayoutManager(
+//                            HomeFragment().context, LinearLayoutManager.HORIZONTAL, false
+//                        )
+//                        recyclerView.adapter = adapter
+//                        recyclerView.setHasFixedSize(true)
+//                    }
+//                }
+//            }
+//
+//            override fun onFailure(call: Call<PlaceResponse>, t: Throwable) {
+//                Log.e("failed", "" + t.message)
+//            }
+//        })
     }
 
     override fun onDestroyView() {
