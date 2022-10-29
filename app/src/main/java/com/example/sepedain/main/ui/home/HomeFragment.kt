@@ -19,13 +19,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sepedain.R
 import com.example.sepedain.databinding.FragmentHomeBinding
+import com.example.sepedain.main.ScreenState
+import com.example.sepedain.network.Place
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.material.snackbar.Snackbar
 
 
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
+
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
@@ -51,45 +55,38 @@ class HomeFragment : Fragment() {
             LocationServices.getFusedLocationProviderClient(requireActivity())
         getCurrentLocation()
 
-        homeViewModel.placeLiveData.observe(viewLifecycleOwner) { places ->
-            val adapter = BikesNearYouAdapter(places)
-            val recyclerView = view.findViewById<RecyclerView>(R.id.rv_bikesnearyou)
-            recyclerView?.layoutManager =
-                LinearLayoutManager(HomeFragment().context, LinearLayoutManager.HORIZONTAL, false)
-            recyclerView?.adapter = adapter
-            recyclerView?.setHasFixedSize(true)
+        homeViewModel.placeLiveData.observe(viewLifecycleOwner) { state ->
+            processPlacesResponse(state)
         }
+    }
 
-//        val client = ApiClient.apiService.fetchPlaces(
-//            "commercial",
-//            "geometry:0ad2ca57a82b4a5ab2919dc0a5e93711",
-//            "proximity:$longitude,$latitude",
-//            "20",
-//            "ec51bcde20554127ac97cc4c52eff067"
-//        )
-//
-//        client.enqueue(object : retrofit2.Callback<PlaceResponse> {
-//            override fun onResponse(call: Call<PlaceResponse>, response: Response<PlaceResponse>) {
-//                if (response.isSuccessful) {
-//                    Log.d("place", "" + response.body())
-//
-//                    val result = response.body()?.result
-//                    result?.let {
-//                        val adapter = BikesNearYouAdapter(result)
-//                        val recyclerView = binding.rvBikesnearyou
-//                        recyclerView.layoutManager = LinearLayoutManager(
-//                            HomeFragment().context, LinearLayoutManager.HORIZONTAL, false
-//                        )
-//                        recyclerView.adapter = adapter
-//                        recyclerView.setHasFixedSize(true)
-//                    }
-//                }
-//            }
-//
-//            override fun onFailure(call: Call<PlaceResponse>, t: Throwable) {
-//                Log.e("failed", "" + t.message)
-//            }
-//        })
+    private fun processPlacesResponse(state: ScreenState<List<Place>?>) {
+        val pb = binding.progressBar
+        when (state) {
+            is ScreenState.Loading -> {
+                pb.visibility = View.VISIBLE
+            }
+            is ScreenState.Success -> {
+                pb.visibility = View.GONE
+                if (state.data != null) {
+                    val adapter = BikesNearYouAdapter(state.data)
+                    val recyclerView = view?.findViewById<RecyclerView>(R.id.rv_bikesnearyou)
+                    recyclerView?.layoutManager =
+                        LinearLayoutManager(
+                            HomeFragment().context,
+                            LinearLayoutManager.HORIZONTAL,
+                            false
+                        )
+                    recyclerView?.adapter = adapter
+                    recyclerView?.setHasFixedSize(true)
+                }
+            }
+            is ScreenState.Error -> {
+                pb.visibility = View.GONE
+                val view = pb.rootView
+                Snackbar.make(view, state.message!!, Snackbar.LENGTH_LONG).show()
+            }
+        }
     }
 
     override fun onDestroyView() {
@@ -103,9 +100,14 @@ class HomeFragment : Fragment() {
                 fusedLocationProviderClient.lastLocation.addOnCompleteListener(requireActivity()) { task ->
                     val location: Location? = task.result
                     if (location == null) {
-                        Toast.makeText(requireActivity(), "Null Received", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireActivity(), "Null Received", Toast.LENGTH_SHORT)
+                            .show()
                     } else {
-                        Toast.makeText(requireActivity(), "Get Success $longitude $latitude", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            requireActivity(),
+                            "Get Success $longitude $latitude",
+                            Toast.LENGTH_SHORT
+                        ).show()
                         latitude = location.latitude
                         longitude = location.longitude
                     }
@@ -120,8 +122,9 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun isLocationEnabled() : Boolean {
-        val locationManager: LocationManager = requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+    private fun isLocationEnabled(): Boolean {
+        val locationManager: LocationManager =
+            requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
                 locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
     }
@@ -129,8 +132,9 @@ class HomeFragment : Fragment() {
     private fun requestPermission() {
         ActivityCompat.requestPermissions(
             requireActivity(), arrayOf(
-            Manifest.permission.ACCESS_COARSE_LOCATION,
-            Manifest.permission.ACCESS_FINE_LOCATION),
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ),
             PERMISSION_REQUEST_ACCESS_LOCATION
         )
     }
@@ -159,7 +163,7 @@ class HomeFragment : Fragment() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
-        if(requestCode == PERMISSION_REQUEST_ACCESS_LOCATION) {
+        if (requestCode == PERMISSION_REQUEST_ACCESS_LOCATION) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(requireActivity(), "Granted", Toast.LENGTH_SHORT).show()
                 getCurrentLocation()

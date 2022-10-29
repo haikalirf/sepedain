@@ -59,8 +59,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:maxWidth="200dp"
             android:ellipsize="end"
+            android:maxWidth="200dp"
             android:maxLines="2"
             android:text="@string/what_would_you_ride_today"
             android:textSize="22sp"
@@ -91,10 +91,21 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_whatwouldride" />
 
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/rv_bikesnearyou"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_bikesnearyou"
+            tools:visibility="visible" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_bikesnearyou"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="240dp"
             android:layout_marginTop="10dp"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
@@ -114,26 +125,26 @@
 
         <TextView
             android:id="@+id/tv_seemorerecentlyvisited_homefragment"
+            style="@style/DefaultText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/rv_bikesnearyou"
-            android:textSize="16sp"
-            android:text="@string/see_more"
-            style="@style/DefaultText"
-            android:textStyle="bold"
+            android:layout_marginTop="12dp"
             android:layout_marginEnd="24dp"
-            android:layout_marginTop="12dp"/>
+            android:text="@string/see_more"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/rv_bikesnearyou" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_recentlyvisited"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="240dp"
             android:layout_marginTop="10dp"
             android:orientation="horizontal"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_recentlyvisited"/>
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_recentlyvisited" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

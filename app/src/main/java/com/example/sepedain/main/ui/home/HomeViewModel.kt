@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.sepedain.main.Repository
+import com.example.sepedain.main.ScreenState
 import com.example.sepedain.network.ApiClient
 import com.example.sepedain.network.Place
 import com.example.sepedain.network.PlaceResponse
@@ -16,8 +17,8 @@ class HomeViewModel(
     private val repository: Repository
     = Repository(ApiClient.apiService)
 ) : ViewModel() {
-    private var _placesLiveData = MutableLiveData<List<Place>>()
-    val placeLiveData: LiveData<List<Place>>
+    private var _placesLiveData = MutableLiveData<ScreenState<List<Place>?>>()
+    val placeLiveData: LiveData<ScreenState<List<Place>?>>
         get() = _placesLiveData
 
     init {
@@ -33,16 +34,20 @@ class HomeViewModel(
             "20",
             "ec51bcde20554127ac97cc4c52eff067"
         )
+        _placesLiveData.postValue(ScreenState.Loading(null))
         client.enqueue(object : Callback<PlaceResponse> {
             override fun onResponse(call: Call<PlaceResponse>, response: Response<PlaceResponse>) {
-                if(response.isSuccessful) {
+                if (response.isSuccessful) {
                     Log.d("place", "" + response.body())
-                    _placesLiveData.postValue(response.body()?.result)
+                    _placesLiveData.postValue(ScreenState.Success(response.body()?.result))
+                } else {
+                    _placesLiveData.postValue(ScreenState.Error(response.code().toString(), null))
                 }
             }
 
             override fun onFailure(call: Call<PlaceResponse>, t: Throwable) {
                 Log.d("Failure", t.message.toString())
+                _placesLiveData.postValue(ScreenState.Error(t.message.toString(), null))
             }
         })
     }
