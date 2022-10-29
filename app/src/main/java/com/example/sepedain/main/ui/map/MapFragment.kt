@@ -19,6 +19,7 @@ import com.example.sepedain.R
 import com.example.sepedain.databinding.FragmentMapBinding
 import com.example.sepedain.dataclasses.PlaceMap
 import com.example.sepedain.main.ui.home.HomeViewModel
+import com.example.sepedain.network.Place
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener
@@ -37,14 +38,16 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener, Routi
     private lateinit var dbRef: DatabaseReference
     private lateinit var markerLatLng: LatLng
     private var polylines: MutableList<Polyline>? = null
+    private val mapViewModel : MapViewModel by lazy {
+        ViewModelProvider(this)[MapViewModel::class.java]
+    }
+    private lateinit var placeData : ArrayList<Place>
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val homeViewModel =
-            ViewModelProvider(this).get(HomeViewModel::class.java)
 
         _binding = FragmentMapBinding.inflate(inflater, container, false)
 
@@ -80,6 +83,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener, Routi
         mapView.onCreate(savedInstanceState)
         mapView.onResume()
         mapView.getMapAsync(this)
+//        placeData = mapViewModel.placeLiveData.value?.data as ArrayList<Place>
     }
 
     override fun onDestroyView() {
@@ -99,7 +103,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener, Routi
     private fun generateLocations(): List<PlaceMap> {
         return listOf(
             PlaceMap("Fakultas Ilmu Komputer", -7.953983029270556, 112.61428770395894, "https://firebasestorage.googleapis.com/v0/b/sepedain.appspot.com/o/places%2Ffilkom.jpg?alt=media&token=d63f133c-2533-47f1-911f-b7799bceff1d", date = null, duration = null)
-
+//            PlaceMap(placeData[0].properties.name.toString(), placeData[0].properties.lat, placeData[0].properties.lon, "https://firebasestorage.googleapis.com/v0/b/sepedain.appspot.com/o/places%2Ffilkom.jpg?alt=media&token=d63f133c-2533-47f1-911f-b7799bceff1d", date = null, duration = null)
         )
     }
 
@@ -158,12 +162,13 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener, Routi
 
     override fun onMapReady(mMap: GoogleMap) {
         mMap.setInfoWindowAdapter(CustomInfoWindowAdapter(requireActivity()))
-        val placeMaps: List<PlaceMap> = generateLocations()
-        mMap.setOnMarkerClickListener { marker ->
-            marker != null && marker.tag != null && marker.tag as Boolean
-        }
+//        val placeMaps: List<PlaceMap> = generateLocations()
 
+//        mMap.setOnMarkerClickListener(GoogleMap.OnMarkerClickListener() { marker ->
+//            marker.tag != null && marker.tag as Boolean
+//        })
 
+        val placeMaps = generateLocations()
         for (place in placeMaps) {
             val marker = mMap.addMarker(
                 MarkerOptions()
@@ -222,7 +227,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener, Routi
             }
         }
         findRoutes(userLatLng, markerLatLng)
-        return true
+        return false
     }
 
     fun findRoutes(Start: LatLng?, End: LatLng?) {
