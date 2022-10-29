@@ -27,7 +27,7 @@ class HomeViewModel(
             "geometry:0ad2ca57a82b4a5ab2919dc0a5e93711",
             "proximity:$lon,$lat",
 //            "proximity:112.6240242,-7.960171",
-            "20",
+            "5",
             "ec51bcde20554127ac97cc4c52eff067"
         )
         _placesLiveData.postValue(ScreenState.Loading(null))

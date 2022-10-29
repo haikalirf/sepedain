@@ -19,8 +19,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sepedain.R
 import com.example.sepedain.databinding.FragmentHomeBinding
+import com.example.sepedain.main.MainActivity
+import com.example.sepedain.main.OrderDetailActivity
 import com.example.sepedain.main.ScreenState
 import com.example.sepedain.network.Place
+import com.example.sepedain.network.locImage
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
@@ -71,7 +74,7 @@ class HomeFragment : Fragment() {
             is ScreenState.Success -> {
                 pb.visibility = View.GONE
                 if (state.data != null) {
-                    val adapter = BikesNearYouAdapter(state.data)
+                    val adapter = BikesNearYouAdapter(state.data, locImage)
                     val recyclerView = view?.findViewById<RecyclerView>(R.id.rv_bikesnearyou)
                     recyclerView?.layoutManager =
                         LinearLayoutManager(
@@ -81,6 +84,16 @@ class HomeFragment : Fragment() {
                         )
                     recyclerView?.adapter = adapter
                     recyclerView?.setHasFixedSize(true)
+
+                    adapter.setOnItemClickCallback(object : BikesNearYouAdapter.OnItemClickCallback {
+                        override fun onItemClicked(data: Place, image: Int) {
+                            val intent = Intent(requireActivity(), OrderDetailActivity::class.java)
+                            intent.putExtra(LOCATION_DATA, data)
+                            intent.putExtra(LOCATION_IMAGE, image)
+                            startActivity(intent)
+                        }
+
+                    })
                 }
             }
             is ScreenState.Error -> {
@@ -143,6 +156,8 @@ class HomeFragment : Fragment() {
 
     companion object {
         private const val PERMISSION_REQUEST_ACCESS_LOCATION = 100
+        const val LOCATION_DATA = "LOCATION"
+        const val LOCATION_IMAGE = "LOCATION_IMAGE"
     }
 
     private fun checkPermissions(): Boolean {

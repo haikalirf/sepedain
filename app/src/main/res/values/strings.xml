@@ -30,4 +30,14 @@
     <string name="place_name">Place Name</string>
     <string name="placeimage">PlaceImage</string>
     <string name="_0_m_away">0 m away</string>
+    <string name="order_now">Order Now</string>
+    <string name="location_name">Location Name</string>
+    <string name="_100_m_away">100 m away</string>
+    <string name="location_formatted_name">Location Formatted Name</string>
+    <string name="price">PRICE :</string>
+    <string name="first_30_mins">First 30 mins</string>
+    <string name="rp_10_000">Rp. 10.000,-</string>
+    <string name="next_30_mins">Next 30 mins</string>
+    <string name="rp_7_000">Rp. 7.000,-</string>
+    <string name="book_now">BOOK NOW</string>
 </resources>
