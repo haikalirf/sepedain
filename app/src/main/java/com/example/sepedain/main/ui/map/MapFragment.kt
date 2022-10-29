@@ -229,7 +229,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, RoutingListener{
                             MarkerOptions()
                                 .position(LatLng(place.properties.lat, place.properties.lon))
                                 .title(place.properties.name)
-                                .snippet(place.properties.distance.toString())
+                                .snippet(place.properties.distance.toString() + "m away")
                                 .icon(bitmapDescriptorFromVector(requireActivity(), R.drawable.marker_sepeda))
                         )
                         marker!!.tag = false
