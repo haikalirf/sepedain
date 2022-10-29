@@ -61,24 +61,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, RoutingListener{
         locationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
         return binding.root
-
-//        val view: View = inflater.inflate(R.layout.fragment_map, container, false)
-//
-
-//        val dashboardViewModel =
-//            ViewModelProvider(this).get(MapViewModel::class.java)
-//
-//        _binding = FragmentMapBinding.inflate(inflater, container, false)
-//        val root: View = binding.root
-//
-//        val mapFragment = childFragmentManager.findFragmentById(R.id.frMap_fragment_map) as SupportMapFragment
-//        mapFragment.getMapAsync(this)
-//
-//        val textView: TextView = binding.textDashboard
-//        dashboardViewModel.text.observe(viewLifecycleOwner) {
-//            textView.text = it
-//        }
-//        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -87,7 +69,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, RoutingListener{
         mapView.onCreate(savedInstanceState)
         mapView.onResume()
         mapView.getMapAsync(this)
-//        placeData = mapViewModel.placeLiveData.value?.data as ArrayList<Place>
+        placeData = mapViewModel.placeLiveData.value?.data as ArrayList<Place>
     }
 
     override fun onDestroyView() {
@@ -106,8 +88,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, RoutingListener{
 
     private fun generateLocations(): List<PlaceMap> {
         return listOf(
-            PlaceMap("Fakultas Ilmu Komputer", -7.953983029270556, 112.61428770395894, "https://firebasestorage.googleapis.com/v0/b/sepedain.appspot.com/o/places%2Ffilkom.jpg?alt=media&token=d63f133c-2533-47f1-911f-b7799bceff1d", date = null, duration = null)
-//            PlaceMap(placeData[0].properties.name.toString(), placeData[0].properties.lat, placeData[0].properties.lon, "https://firebasestorage.googleapis.com/v0/b/sepedain.appspot.com/o/places%2Ffilkom.jpg?alt=media&token=d63f133c-2533-47f1-911f-b7799bceff1d", date = null, duration = null)
+//            PlaceMap("Fakultas Ilmu Komputer", -7.953983029270556, 112.61428770395894, "https://firebasestorage.googleapis.com/v0/b/sepedain.appspot.com/o/places%2Ffilkom.jpg?alt=media&token=d63f133c-2533-47f1-911f-b7799bceff1d", date = null, duration = null)
+            PlaceMap(placeData[0].properties.name.toString(), placeData[0].properties.lat, placeData[0].properties.lon, "https://firebasestorage.googleapis.com/v0/b/sepedain.appspot.com/o/places%2Ffilkom.jpg?alt=media&token=d63f133c-2533-47f1-911f-b7799bceff1d", date = null, duration = null)
         )
     }
 
@@ -167,30 +149,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, RoutingListener{
         )
     }
 
-//    private fun getCurrentLocation() {
-//        if (ActivityCompat.checkSelfPermission(requireActivity(),
-//                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//            ActivityCompat.requestPermissions(requireActivity(),
-//                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), PERMISSION_REQUEST_ACCESS_LOCATION);
-//            return
-//        }
-//
-//        locationClient.lastLocation
-//            .addOnSuccessListener {
-//                if (it != null) {
-//                    val currUid = auth.currentUser?.uid!!
-//                    dbRef = FirebaseDatabase.getInstance().reference
-//                    val update: HashMap<String, Any> = HashMap()
-//                    update["latitude"] = it.latitude
-//                    update["longitude"] = it.longitude
-//                    dbRef.child("user").child(currUid).updateChildren(update)
-//                }
-//            }
-//            .addOnFailureListener {
-//                Toast.makeText(requireActivity(), "Failed on getting current location", Toast.LENGTH_SHORT).show()
-//            }
-//    }
-
     private fun getURL(from : LatLng, to : LatLng) : String {
         val origin = "origin=" + from.latitude + "," + from.longitude
         val dest = "destination=" + to.latitude + "," + to.longitude
@@ -223,9 +181,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, RoutingListener{
     override fun onMapReady(mMap: GoogleMap) {
         map = mMap
         mMap.setInfoWindowAdapter(CustomInfoWindowAdapter(requireActivity()))
-//        val placeMaps: List<PlaceMap> = generateLocations()
 
-        mMap.setOnMarkerClickListener(OnMarkerClickListener {marker ->
+        mMap.setOnMarkerClickListener { marker ->
             markerLatLng = marker.position
             var userLatLng: LatLng? = null
             getCurrentLocation()
@@ -243,7 +200,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, RoutingListener{
             }
 //            Toast.makeText(requireActivity(), userLatLng.toString() + " " + markerLatLng.toString(), Toast.LENGTH_SHORT).show()
             marker.tag != null && marker.tag as Boolean
-        })
+        }
 
         val placeMaps = generateLocations()
         for (place in placeMaps) {

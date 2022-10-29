@@ -47,7 +47,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/ivEmailImage_activity_register">
-                <EditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etEmail_activity_register"
                     android:hint="Email"
                     android:background="@null"
@@ -88,7 +88,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/ivUsernameImage_activity_register">
-                <EditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etUsername_activity_register"
                     android:hint="Username"
                     android:background="@null"
@@ -130,7 +130,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/ivPasswordImage_activity_register">
-                <EditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etPassword_activity_register"
                     android:hint="Password"
                     android:background="@null"

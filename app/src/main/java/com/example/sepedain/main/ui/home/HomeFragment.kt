@@ -4,8 +4,10 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
 import android.location.Location
 import android.location.LocationManager
+import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.view.LayoutInflater
@@ -27,6 +29,11 @@ import com.example.sepedain.network.locImage
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
+import java.io.File
+import java.io.IOException
 
 
 class HomeFragment : Fragment() {
@@ -40,6 +47,8 @@ class HomeFragment : Fragment() {
     var latitude: Double = 0.0
     var longitude: Double = 0.0
     private lateinit var homeViewModel: HomeViewModel
+    private lateinit var stref: StorageReference
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -49,6 +58,24 @@ class HomeFragment : Fragment() {
         fusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(requireActivity())
         getCurrentLocation()
+
+        auth = FirebaseAuth.getInstance()
+        val uid = auth.uid
+        stref = FirebaseStorage.getInstance().getReference("profile-pictures/$uid")
+        try {
+            val localFile: File = File.createTempFile("Tempfile", ".jpg ")
+            stref.getFile(localFile).addOnCompleteListener {
+                if (it.isSuccessful) {
+                    val bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
+                    binding.ivProfilepictureHomefragment.setImageBitmap(bitmap)
+                } else {
+//                    Toast.makeText(requireActivity(), "Failed to retrieve image", Toast.LENGTH_SHORT).show()
+                }
+            }
+        } catch (e: IOException) {
+            Toast.makeText(requireActivity(), e.toString(), Toast.LENGTH_SHORT).show()
+        }
+
         return binding.root
     }
 
