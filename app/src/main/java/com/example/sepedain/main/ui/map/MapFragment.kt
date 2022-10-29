@@ -2,10 +2,14 @@ package com.example.sepedain.main.ui.map
 
 import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.location.Location
+import android.location.LocationManager
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,7 +22,6 @@ import com.directions.route.*
 import com.example.sepedain.R
 import com.example.sepedain.databinding.FragmentMapBinding
 import com.example.sepedain.dataclasses.PlaceMap
-import com.example.sepedain.main.ui.home.HomeViewModel
 import com.example.sepedain.network.Place
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.*
@@ -28,10 +31,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 
 
-class MapFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener, RoutingListener{
+class MapFragment : Fragment(), OnMapReadyCallback, RoutingListener{
     private lateinit var mMap: GoogleMap
+    private lateinit var map: GoogleMap
     private lateinit var locationClient: FusedLocationProviderClient
-    private val PERMISSIONS_REQUEST_LOCATION = 1
+    private val PERMISSION_REQUEST_ACCESS_LOCATION = 100
     private var _binding: FragmentMapBinding? = null
     private val binding get() = _binding!!
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
@@ -107,29 +111,85 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener, Routi
         )
     }
 
-    private fun getCurrentLocation() {
-        if (ActivityCompat.checkSelfPermission(requireActivity(),
-                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(requireActivity(),
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), PERMISSIONS_REQUEST_LOCATION);
-            return
+    private fun checkPermissions(): Boolean {
+        if (ActivityCompat.checkSelfPermission(
+                requireActivity(), Manifest.permission.ACCESS_COARSE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            return true
         }
-
-        locationClient.lastLocation
-            .addOnSuccessListener {
-                if (it != null) {
-                    val currUid = auth.currentUser?.uid!!
-                    dbRef = FirebaseDatabase.getInstance().reference
-                    val update: HashMap<String, Any> = HashMap()
-                    update["latitude"] = it.latitude
-                    update["longitude"] = it.longitude
-                    dbRef.child("user").child(currUid).updateChildren(update)
-                }
-            }
-            .addOnFailureListener {
-                Toast.makeText(requireActivity(), "Failed on getting current location", Toast.LENGTH_SHORT).show()
-            }
+        return false
     }
+
+    private fun isLocationEnabled(): Boolean {
+        val locationManager: LocationManager =
+            requireActivity().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+    }
+
+    private fun getCurrentLocation() {
+        if (checkPermissions()) {
+            if (isLocationEnabled()) {
+                locationClient.lastLocation.addOnCompleteListener(requireActivity()) { task ->
+                    val location: Location? = task.result
+                    if (location == null) {
+                        Toast.makeText(requireActivity(), "Null Received", Toast.LENGTH_SHORT)
+                            .show()
+                    } else {
+                        val currUid = auth.currentUser?.uid!!
+                        dbRef = FirebaseDatabase.getInstance().reference
+                        val update: HashMap<String, Any> = HashMap()
+                        update["latitude"] = location.latitude
+                        update["longitude"] = location.longitude
+                        dbRef.child("user").child(currUid).updateChildren(update)
+                    }
+                }
+            } else {
+                Toast.makeText(requireActivity(), "Turn on location", Toast.LENGTH_SHORT).show()
+                val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                startActivity(intent)
+            }
+        } else {
+            requestPermission()
+        }
+    }
+
+    private fun requestPermission() {
+        ActivityCompat.requestPermissions(
+            requireActivity(), arrayOf(
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ),
+            PERMISSION_REQUEST_ACCESS_LOCATION
+        )
+    }
+
+//    private fun getCurrentLocation() {
+//        if (ActivityCompat.checkSelfPermission(requireActivity(),
+//                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(requireActivity(),
+//                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), PERMISSION_REQUEST_ACCESS_LOCATION);
+//            return
+//        }
+//
+//        locationClient.lastLocation
+//            .addOnSuccessListener {
+//                if (it != null) {
+//                    val currUid = auth.currentUser?.uid!!
+//                    dbRef = FirebaseDatabase.getInstance().reference
+//                    val update: HashMap<String, Any> = HashMap()
+//                    update["latitude"] = it.latitude
+//                    update["longitude"] = it.longitude
+//                    dbRef.child("user").child(currUid).updateChildren(update)
+//                }
+//            }
+//            .addOnFailureListener {
+//                Toast.makeText(requireActivity(), "Failed on getting current location", Toast.LENGTH_SHORT).show()
+//            }
+//    }
 
     private fun getURL(from : LatLng, to : LatLng) : String {
         val origin = "origin=" + from.latitude + "," + from.longitude
@@ -145,8 +205,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener, Routi
         dbRef = FirebaseDatabase.getInstance().reference
         dbRef.child("user").child(currUid).get().addOnSuccessListener {
             if (it.exists()) {
-                val latitude = it.child("latitude").value as Double
-                val longitude = it.child("longitude").value as Double
+                val latitude: Double = it.child("latitude").value as Double
+                val longitude: Double = it.child("longitude").value as Double
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(latitude, longitude), 16f))
                 val userMarker = mMap.addMarker(
                     MarkerOptions()
@@ -161,12 +221,29 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener, Routi
     }
 
     override fun onMapReady(mMap: GoogleMap) {
+        map = mMap
         mMap.setInfoWindowAdapter(CustomInfoWindowAdapter(requireActivity()))
 //        val placeMaps: List<PlaceMap> = generateLocations()
 
-//        mMap.setOnMarkerClickListener(GoogleMap.OnMarkerClickListener() { marker ->
-//            marker.tag != null && marker.tag as Boolean
-//        })
+        mMap.setOnMarkerClickListener(OnMarkerClickListener {marker ->
+            markerLatLng = marker.position
+            var userLatLng: LatLng? = null
+            getCurrentLocation()
+            val currUid = auth.currentUser?.uid!!
+            dbRef = FirebaseDatabase.getInstance().reference
+            dbRef.child("user").child(currUid).get().addOnSuccessListener {
+                if (it.exists()) {
+                    val latitude = it.child("latitude").value as Double
+                    val longitude = it.child("longitude").value as Double
+                    userLatLng = LatLng(latitude, longitude)
+                    findRoutes(userLatLng, markerLatLng)
+                } else {
+                    Toast.makeText(requireActivity(), "Something broke", Toast.LENGTH_SHORT).show()
+                }
+            }
+//            Toast.makeText(requireActivity(), userLatLng.toString() + " " + markerLatLng.toString(), Toast.LENGTH_SHORT).show()
+            marker.tag != null && marker.tag as Boolean
+        })
 
         val placeMaps = generateLocations()
         for (place in placeMaps) {
@@ -182,55 +259,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener, Routi
         getUserLocation(mMap)
     }
 
-    override fun onMarkerClick(marker: Marker): Boolean {
-//        val options = PolylineOptions()
-//        options.width(5f)
-//        markerLatLng = marker.position
-//        var userLatLng: LatLng? = null
-//        getCurrentLocation()
-//        val currUid = auth.currentUser?.uid!!
-//        dbRef = FirebaseDatabase.getInstance().reference
-//        dbRef.child("user").child(currUid).get().addOnSuccessListener {
-//            if (it.exists()) {
-//                val latitude = it.child("latitude").value as Double
-//                val longitude = it.child("longitude").value as Double
-//                userLatLng = LatLng(latitude, longitude)
-//            } else {
-//                Toast.makeText(requireActivity(), "Something broke", Toast.LENGTH_SHORT).show()
-//            }
-//        }
-//        val url: String = getURL(userLatLng!!, markerLatLng)
-//        val parser: Parser = default()
-//        val stringBuilder: StringBuilder = java.lang.StringBuilder(url)
-//        val json: JsonObject = parser.parse(stringBuilder) as JsonObject
-//        val routes = json.array<JsonObject>("routes")
-//        val points = routes!!["legs"]["steps"][0] as JsonArray<JsonObject>
-//        val polypts = points.map { it.obj("polyline")?.string("points")!!  }
-//        options.add(userLatLng)
-//        for (point in polypts)
-//            Toast.makeText(requireActivity(), point, Toast.LENGTH_SHORT).show()
-////            options.add(point)
-//        options.add(markerLatLng)
-//        mMap!!.addPolyline(options)
-        markerLatLng = marker.position
-        var userLatLng: LatLng? = null
-        getCurrentLocation()
-        val currUid = auth.currentUser?.uid!!
-        dbRef = FirebaseDatabase.getInstance().reference
-        dbRef.child("user").child(currUid).get().addOnSuccessListener {
-            if (it.exists()) {
-                val latitude = it.child("latitude").value as Double
-                val longitude = it.child("longitude").value as Double
-                userLatLng = LatLng(latitude, longitude)
-            } else {
-                Toast.makeText(requireActivity(), "Something broke", Toast.LENGTH_SHORT).show()
-            }
-        }
-        findRoutes(userLatLng, markerLatLng)
-        return false
-    }
-
-    fun findRoutes(Start: LatLng?, End: LatLng?) {
+    private fun findRoutes(Start: LatLng?, End: LatLng?) {
         if (Start == null || End == null) {
             Toast.makeText(requireActivity(), "Unable to get location", Toast.LENGTH_LONG).show()
         } else {
@@ -251,7 +280,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener, Routi
     }
 
     override fun onRoutingStart() {
-        TODO()
+        Toast.makeText(requireActivity(),"Finding Route...",Toast.LENGTH_LONG).show();
     }
 
     override fun onRoutingSuccess(route: ArrayList<Route>?, shortestRouteIndex: Int) {
@@ -269,10 +298,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, OnMarkerClickListener, Routi
         if (route != null) {
             for (i in 0 until route.size) {
                 if (i == shortestRouteIndex) {
-//                    polyOptions.color()
+                    polyOptions.color(R.color.orange)
                     polyOptions.width(7f)
                     polyOptions.addAll(route.get(shortestRouteIndex).getPoints())
-                    val polyline = mMap.addPolyline(polyOptions)
+                    val polyline = map.addPolyline(polyOptions)
                     polyline.points[0]
                     val k = polyline.points.size
                     polyline.points[k - 1]
