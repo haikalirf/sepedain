@@ -17,12 +17,20 @@ class CustomInfoWindowAdapter (context: Context) : GoogleMap.InfoWindowAdapter {
     private lateinit var ivImage: ImageView
     private val mWindow: View = LayoutInflater.from(context).inflate(R.layout.info_window_layout, null)
 
+    val locImage = listOf(
+        R.drawable.loc1,
+        R.drawable.loc2,
+        R.drawable.loc3,
+        R.drawable.loc4,
+        R.drawable.loc5
+    )
+
     override fun getInfoContents(marker: Marker): View? {
         tvLocation = mWindow.findViewById(R.id.tvMapLocation)
         tvDistance = mWindow.findViewById(R.id.tvDistance)
         tvLocation.text = marker.title
         tvDistance.text = marker.snippet
-//        ivImage = mWindow.findViewById(R.id.ivLocationImage_info_window_layout)
+        ivImage = mWindow.findViewById(R.id.ivLocationImage_info_window_layout)
 //        Glide.with(mWindow).load(marker.snippet).centerCrop().placeholder(R.drawable.placeholder).into(ivImage)
         return mWindow
     }
