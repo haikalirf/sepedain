@@ -17,14 +17,13 @@ class OrderDetailActivity : AppCompatActivity() {
         val item = intent.getParcelableExtra<Place>("LOCATION")
         val image = intent.getIntExtra("LOCATION_IMAGE", -1)
         binding.apply {
-            tvDistance.text = item?.properties?.distance.toString()
+            tvDistance.text = StringBuilder(item?.properties?.distance.toString()).append(" m away")
             tvLocationname.text = item?.properties?.name.toString()
-            tvLocationformatted.text = item?.properties?.name.toString()
-//            ivLocationimage.setImageResource(image)
+            tvLocationformatted.text = item?.properties?.formatted.toString()
+            ivLocationimage.setImageResource(image)
             btnBooknow.setOnClickListener {
-                Toast.makeText(this@OrderDetailActivity, "Processing your reqquest", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@OrderDetailActivity, "Processing your request", Toast.LENGTH_SHORT).show()
             }
         }
-        image.let { binding.ivLocationimage.setImageResource(it) }
     }
 }

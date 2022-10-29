@@ -119,7 +119,6 @@ class HomeFragment : Fragment() {
                             intent.putExtra(LOCATION_IMAGE, image)
                             startActivity(intent)
                         }
-
                     })
                 }
             }

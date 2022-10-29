@@ -28,7 +28,7 @@
         android:ellipsize="end"
         android:maxLines="2"
         android:text="@string/location_name"
-        android:textSize="32sp"
+        android:textSize="28sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_ordernow" />
@@ -38,7 +38,7 @@
         style="@style/DefaultText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="36dp"
         android:text="@string/_100_m_away"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -52,7 +52,7 @@
         android:ellipsize="end"
         android:maxLines="2"
         android:text="@string/location_formatted_name"
-        android:textSize="16sp"
+        android:textSize="12sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_locationname" />
 
