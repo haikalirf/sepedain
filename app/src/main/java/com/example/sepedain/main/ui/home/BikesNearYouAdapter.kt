@@ -9,10 +9,12 @@ import com.example.sepedain.R
 import com.example.sepedain.network.Place
 
 class BikesNearYouAdapter(private val placeList: List<Place>) : RecyclerView.Adapter<BikesNearYouAdapter.ViewHolder>(){
-    inner class ViewHolder(private val itemView: View): RecyclerView.ViewHolder(itemView) {
+    inner class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         fun bindData(place: Place) {
             val name = itemView.findViewById<TextView>(R.id.tv_placename)
             name.text = place.properties.name
+            val distance = itemView.findViewById<TextView>(R.id.tv_distance)
+            distance.text = StringBuilder(place.properties.distance.toString()).append(" m away")
         }
     }
 

@@ -14,13 +14,13 @@
             android:id="@+id/iv_placeimage"
             android:layout_width="175dp"
             android:layout_height="175dp"
+            android:contentDescription="@string/placeimage"
             android:scaleType="centerCrop"
             android:src="@mipmap/ic_launcher"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:contentDescription="@string/placeimage" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tv_placename"
@@ -28,12 +28,29 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
-            android:layout_marginBottom="12dp"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:text="@string/place_name"
-            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:textSize="18sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/iv_placeimage"
+            app:layout_constraintBottom_toTopOf="@+id/tv_distance"
             app:layout_constraintStart_toStartOf="@+id/iv_placeimage" />
+
+        <TextView
+            android:id="@+id/tv_distance"
+            style="@style/DefaultText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/_0_m_away"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:layout_marginStart="12dp"
+            android:layout_marginBottom="8dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            app:layout_constraintBottom_toBottomOf="@id/iv_placeimage"
+            app:layout_constraintStart_toStartOf="@id/iv_placeimage" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>

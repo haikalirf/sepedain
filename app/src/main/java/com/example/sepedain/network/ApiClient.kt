@@ -29,7 +29,7 @@ object ApiClient {
 
 interface ApiService {
     @GET("places")
-    fun fetchPlace(
+    fun fetchPlaces(
         @Query("categories") categories: String,
         @Query("filter") filter: String,
         @Query("bias") bias: String,

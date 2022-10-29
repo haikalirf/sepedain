@@ -29,4 +29,5 @@
     <string name="phone_number">Phone Number</string>
     <string name="place_name">Place Name</string>
     <string name="placeimage">PlaceImage</string>
+    <string name="_0_m_away">0 m away</string>
 </resources>
