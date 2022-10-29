@@ -21,16 +21,12 @@ class HomeViewModel(
     val placeLiveData: LiveData<ScreenState<List<Place>?>>
         get() = _placesLiveData
 
-    init {
-        fetchPlace()
-    }
-
-    private fun fetchPlace() {
+    fun fetchPlace(lon : Double, lat : Double) {
         val client = repository.getPlaces(
             "commercial",
             "geometry:0ad2ca57a82b4a5ab2919dc0a5e93711",
-//            "proximity:${HomeFragment().longitude},${HomeFragment().latitude}",
-            "proximity:112.6240242,-7.960171",
+            "proximity:$lon,$lat",
+//            "proximity:112.6240242,-7.960171",
             "20",
             "ec51bcde20554127ac97cc4c52eff067"
         )

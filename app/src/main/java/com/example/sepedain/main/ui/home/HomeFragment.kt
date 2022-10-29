@@ -41,8 +41,8 @@ class HomeFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        homeViewModel = ViewModelProvider(this)[HomeViewModel::class.java]
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        homeViewModel = ViewModelProvider(this)[HomeViewModel::class.java]
         fusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(requireActivity())
         getCurrentLocation()
@@ -51,10 +51,12 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         fusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(requireActivity())
         getCurrentLocation()
 
+        homeViewModel.fetchPlace(longitude, latitude)
         homeViewModel.placeLiveData.observe(viewLifecycleOwner) { state ->
             processPlacesResponse(state)
         }
