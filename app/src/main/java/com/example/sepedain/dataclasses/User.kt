@@ -8,10 +8,11 @@ data class User(
     var username: String,
     var email: String,
     var uid: String,
-    var firstName: String,
-    var lastName: String?,
-    var phoneNumber: String?,
-    var gender: String?,
+    var firstName: String = "User",
+    var lastName: String = "",
+    var phoneNumber: String = "",
+    var gender: String = "",
     var recentlyVisited: Array<PlaceMap>?,
-    var lastKnownLocation: String?
+    var latitude: String = "",
+    var longitude: String = ""
 ): Parcelable
