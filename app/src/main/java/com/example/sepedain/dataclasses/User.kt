@@ -11,7 +11,6 @@ data class User(
     var firstName: String = "User",
     var lastName: String = "",
     var phoneNumber: String = "",
-    var gender: String = "",
     var latitude: Double = 0.0,
     var longitude: Double = 0.0
 ): Parcelable

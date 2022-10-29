@@ -19,21 +19,21 @@ class CustomInfoWindowAdapter (context: Context) : GoogleMap.InfoWindowAdapter {
 
     override fun getInfoContents(marker: Marker): View? {
         tvLocation = mWindow.findViewById(R.id.tvMapLocation)
-//        tvDistance = mWindow.findViewById(R.id.tvDistance)
-        ivImage = mWindow.findViewById(R.id.ivLocationImage_info_window_layout)
+        tvDistance = mWindow.findViewById(R.id.tvDistance)
         tvLocation.text = marker.title
-        Glide.with(mWindow).load(marker.snippet).centerCrop().placeholder(R.drawable.placeholder).into(ivImage)
-//        tvDistance.text = marker.snippet
+        tvDistance.text = marker.snippet
+//        ivImage = mWindow.findViewById(R.id.ivLocationImage_info_window_layout)
+//        Glide.with(mWindow).load(marker.snippet).centerCrop().placeholder(R.drawable.placeholder).into(ivImage)
         return mWindow
     }
 
     override fun getInfoWindow(marker: Marker): View? {
         tvLocation = mWindow.findViewById(R.id.tvMapLocation)
-//        tvDistance = mWindow.findViewById(R.id.tvDistance)
-        ivImage = mWindow.findViewById(R.id.ivLocationImage_info_window_layout)
+        tvDistance = mWindow.findViewById(R.id.tvDistance)
         tvLocation.text = marker.title
-        Glide.with(mWindow).load(marker.snippet).into(ivImage)
-//        tvDistance.text = marker.snippet
+        tvDistance.text = marker.snippet
+//        ivImage = mWindow.findViewById(R.id.ivLocationImage_info_window_layout)
+//        Glide.with(mWindow).load(marker.snippet).into(ivImage)
         return mWindow
     }
 

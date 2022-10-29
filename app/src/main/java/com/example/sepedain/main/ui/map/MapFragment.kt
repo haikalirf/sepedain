@@ -18,21 +18,28 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.directions.route.*
 import com.example.sepedain.R
 import com.example.sepedain.databinding.FragmentMapBinding
 import com.example.sepedain.dataclasses.PlaceMap
+import com.example.sepedain.main.OrderDetailActivity
+import com.example.sepedain.main.ScreenState
+import com.example.sepedain.main.ui.home.BikesNearYouAdapter
+import com.example.sepedain.main.ui.home.HomeFragment
+import com.example.sepedain.main.ui.home.HomeViewModel
 import com.example.sepedain.network.Place
+import com.example.sepedain.network.locImage
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.*
-import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener
 import com.google.android.gms.maps.model.*
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 
 
 class MapFragment : Fragment(), OnMapReadyCallback, RoutingListener{
-    private lateinit var mMap: GoogleMap
     private lateinit var map: GoogleMap
     private lateinit var locationClient: FusedLocationProviderClient
     private val PERMISSION_REQUEST_ACCESS_LOCATION = 100
@@ -41,11 +48,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, RoutingListener{
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private lateinit var dbRef: DatabaseReference
     private lateinit var markerLatLng: LatLng
+    private var placeData: List<Place>? = null
     private var polylines: MutableList<Polyline>? = null
-    private val mapViewModel : MapViewModel by lazy {
-        ViewModelProvider(this)[MapViewModel::class.java]
-    }
-    private lateinit var placeData : ArrayList<Place>
+    private lateinit var homeViewModel: HomeViewModel
+    private var finalPolyline: Polyline? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -54,7 +60,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, RoutingListener{
     ): View {
 
         _binding = FragmentMapBinding.inflate(inflater, container, false)
-
+        homeViewModel = ViewModelProvider(this)[HomeViewModel::class.java]
         val mapFragment = binding.frMapFragmentMap
         mapFragment.getMapAsync(this)
 
@@ -69,7 +75,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, RoutingListener{
         mapView.onCreate(savedInstanceState)
         mapView.onResume()
         mapView.getMapAsync(this)
-        placeData = mapViewModel.placeLiveData.value?.data as ArrayList<Place>
     }
 
     override fun onDestroyView() {
@@ -86,12 +91,12 @@ class MapFragment : Fragment(), OnMapReadyCallback, RoutingListener{
         }
     }
 
-    private fun generateLocations(): List<PlaceMap> {
-        return listOf(
-//            PlaceMap("Fakultas Ilmu Komputer", -7.953983029270556, 112.61428770395894, "https://firebasestorage.googleapis.com/v0/b/sepedain.appspot.com/o/places%2Ffilkom.jpg?alt=media&token=d63f133c-2533-47f1-911f-b7799bceff1d", date = null, duration = null)
-            PlaceMap(placeData[0].properties.name.toString(), placeData[0].properties.lat, placeData[0].properties.lon, "https://firebasestorage.googleapis.com/v0/b/sepedain.appspot.com/o/places%2Ffilkom.jpg?alt=media&token=d63f133c-2533-47f1-911f-b7799bceff1d", date = null, duration = null)
-        )
-    }
+//    private fun generateLocations(): List<Place> {
+//        return listOf(
+////            Place("Fakultas Ilmu Komputer", -7.953983029270556, 112.61428770395894, "https://firebasestorage.googleapis.com/v0/b/sepedain.appspot.com/o/places%2Ffilkom.jpg?alt=media&token=d63f133c-2533-47f1-911f-b7799bceff1d", date = null, duration = null)
+//            Place(placeData[0].properties.name.toString(), placeData[0].properties.lat, placeData[0].properties.lon, "https://firebasestorage.googleapis.com/v0/b/sepedain.appspot.com/o/places%2Ffilkom.jpg?alt=media&token=d63f133c-2533-47f1-911f-b7799bceff1d", date = null, duration = null)
+//        )
+//    }
 
     private fun checkPermissions(): Boolean {
         if (ActivityCompat.checkSelfPermission(
@@ -157,7 +162,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, RoutingListener{
         return "https://maps.googleapis.com/maps/api/directions/json?$params"
     }
 
-    private fun getUserLocation(mMap: GoogleMap) {
+    private fun setUserMarker(mMap: GoogleMap) {
         getCurrentLocation()
         val currUid = auth.currentUser?.uid!!
         dbRef = FirebaseDatabase.getInstance().reference
@@ -181,7 +186,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, RoutingListener{
     override fun onMapReady(mMap: GoogleMap) {
         map = mMap
         mMap.setInfoWindowAdapter(CustomInfoWindowAdapter(requireActivity()))
-
         mMap.setOnMarkerClickListener { marker ->
             markerLatLng = marker.position
             var userLatLng: LatLng? = null
@@ -198,22 +202,60 @@ class MapFragment : Fragment(), OnMapReadyCallback, RoutingListener{
                     Toast.makeText(requireActivity(), "Something broke", Toast.LENGTH_SHORT).show()
                 }
             }
-//            Toast.makeText(requireActivity(), userLatLng.toString() + " " + markerLatLng.toString(), Toast.LENGTH_SHORT).show()
             marker.tag != null && marker.tag as Boolean
         }
 
-        val placeMaps = generateLocations()
-        for (place in placeMaps) {
-            val marker = mMap.addMarker(
-                MarkerOptions()
-                    .position(LatLng(place.latitude, place.longitude))
-                    .title(place.location)
-                    .snippet(place.imageUrl)
-                    .icon(bitmapDescriptorFromVector(requireActivity(), R.drawable.marker_sepeda))
-            )
-            marker!!.tag = false
+        val currUid = auth.currentUser?.uid!!
+        dbRef = FirebaseDatabase.getInstance().reference
+        dbRef.child("user").child(currUid).get().addOnSuccessListener {
+            if (it.exists()) {
+                val latitude: Double = it.child("latitude").value as Double
+                val longitude: Double = it.child("longitude").value as Double
+                homeViewModel.fetchPlace(longitude, latitude)
+            } else {
+                Toast.makeText(requireActivity(), "Something broke", Toast.LENGTH_SHORT).show()
+            }
         }
-        getUserLocation(mMap)
+        placeData = homeViewModel.placeLiveData.value?.data
+        homeViewModel.placeLiveData.observe(viewLifecycleOwner) { state ->
+            processPlacesResponse(state, mMap)
+        }
+        mMap.setOnMapClickListener {
+            mMap.clear()
+            homeViewModel.placeLiveData.observe(viewLifecycleOwner) { state ->
+                processPlacesResponse(state, mMap)
+            }
+        }
+        setUserMarker(mMap)
+    }
+
+    private fun processPlacesResponse(state: ScreenState<List<Place>?>, mMap: GoogleMap) {
+        val pb = binding.progressBar
+        when (state) {
+            is ScreenState.Loading -> {
+                pb.visibility = View.VISIBLE
+            }
+            is ScreenState.Success -> {
+                pb.visibility = View.GONE
+                if (state.data != null) {
+                    for (place in state.data) {
+                        val marker = mMap.addMarker(
+                            MarkerOptions()
+                                .position(LatLng(place.properties.lat, place.properties.lon))
+                                .title(place.properties.name)
+                                .snippet(place.properties.distance.toString() + "m away" )
+                                .icon(bitmapDescriptorFromVector(requireActivity(), R.drawable.marker_sepeda))
+                        )
+                        marker!!.tag = false
+                    }
+                }
+            }
+            is ScreenState.Error -> {
+                pb.visibility = View.GONE
+                val view = pb.rootView
+                Snackbar.make(view, state.message!!, Snackbar.LENGTH_LONG).show()
+            }
+        }
     }
 
     private fun findRoutes(Start: LatLng?, End: LatLng?) {
@@ -245,13 +287,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, RoutingListener{
 //        val zoom = CameraUpdateFactory.zoomTo(16f)
         polylines?.clear()
         val polyOptions = PolylineOptions()
-        var polylineStartLatLng: LatLng? = null
-        var polylineEndLatLng: LatLng? = null
-
 
         polylines = ArrayList()
-        //add route(s) to the map using polyline
-        //add route(s) to the map using polyline
         if (route != null) {
             for (i in 0 until route.size) {
                 if (i == shortestRouteIndex) {
@@ -266,18 +303,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, RoutingListener{
                 }
             }
         }
-
-        //Add Marker on route starting position
-//        val startMarker = MarkerOptions()
-//        startMarker.position(polylineStartLatLng!!)
-//        startMarker.title("My Location")
-//        mMap.addMarker(startMarker)
-
-        //Add Marker on route ending position
-//        val endMarker = MarkerOptions()
-//        endMarker.position(polylineEndLatLng!!)
-//        endMarker.title("Destination")
-//        mMap.addMarker(endMarker)
     }
 
     override fun onRoutingCancelled() {
